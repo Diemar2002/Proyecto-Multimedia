@@ -1,0 +1,18 @@
+body {
+  overflow: hidden;
+}
+
+#gameZone {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: min-content;
+  height: min-content;
+}
+
+#gameZone canvas {
+  transition: width 0.1s;
+  transition: height 0.1s;
+}
+
+/* Estilo de la página */
