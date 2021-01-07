@@ -1,0 +1,4 @@
+/*
+ * Diferentes tipos de eventos
+*/
+

@@ -1,13 +1,34 @@
-body {
-  overflow: hidden;
+html body {
+  margin: 0;
+  padding: 0;
+  background-color: #2e3440;
+  overflow-x: hidden;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-#gameZone {
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.container {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: min-content;
   height: min-content;
+}
+.container button {
+  background-color: coral;
+  border-radius: 0;
+  color:#2e3440;
+  display: block;
+  width: 100%;
+  font-size: larger;
+  height: 30px;
+  border: 0;
+  margin: auto;
 }
 
 #gameZone canvas {
@@ -16,3 +37,72 @@ body {
 }
 
 /* Estilo de la página */
+
+.header {
+  color: rgb(236, 236, 236);
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  padding-left: 3%;
+  padding-top: 0.3%;
+  padding-bottom: 0.3%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+hr.header {
+  padding: 0;
+  margin-bottom: 3%;
+  height: 3px;
+  background: #ececec;
+}
+
+.text {
+  padding-left: 3%;
+  padding-right: 3%;
+  color: #ececec;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: justify;
+}
+
+h1.text, h2.text, h3.text {
+
+}
+
+#p5_loading {
+  background-color: #1e1b35;
+  color: #ececec;
+  box-sizing: border-box;
+  display: flex;
+  vertical-align: middle;
+  width: 50vw;
+  height: 50vh;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+}
+
+.loader {
+  margin: auto;
+  border: 6px solid #ececec;
+  border-radius: 50%;
+  border-top: 6px solid coral;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Estilo de los botones */
+#playButton {
+  
+}

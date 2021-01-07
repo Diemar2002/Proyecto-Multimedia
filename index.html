@@ -1,15 +1,30 @@
-<html>
+<!DOCTYPE html>
+<html onload="console.log('cargada')" lang="es">
 <head>
+  <title>Project SARS</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Proyecto interactivo de manejo de una pandemia en España">
   <link rel="stylesheet" href="style.css">
   
-  <script src="./src/utilities.js"></script>
   <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
   <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
-  <script language="javascript" type="text/javascript" src="mainLoop.js"></script>
+  <script src="./libraries/p5.sound.js"></script>
   <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
-  <script src="./src/game.js"></script>
+  <!-- Simulación -->
+  <script src="./src/sim/events.js"></script>
+  <script src="./src/sim/comunidades.js"></script>
+  <script src="./src/sim/simulation.js"></script>
+  <script src="./src/sim/updateCards.js"></script>
+  <!-- Misceláneo -->
+  <script src="./assets/assets.js"></script>
+  <script src="./src/fullscreenHandler.js"></script>
+  <script src="./src/ui.js"></script>
+  <script src="./src/main.js"></script>
+  <!-- Modos -->
+  <script src="./src/modes/intro.js"></script>
+  <script src="./src/modes/mainGame.js"></script>
+  <script src="./src/modes/mainMenu.js"></script>
 
   <!-- This line removes any default padding and style.
        You might only need one of these values set. -->
@@ -17,9 +32,31 @@
 </head>
 
 <body>
+  <div class="header">
+    <h1>Project SARS</h1>
+  </div>
+  <hr class="header">
   <div class="container">
-    <div id="gameZone"></div>
+    <div id="gameZone">
+      <div id="p5_loading" class="loadingclass">
+        <div style="margin: auto;">
+          <div class="loader"></div>
+          <p>Cargando...</p>
+        </div>
+      </div>
+    </div>
     <button onclick="fullScreen()">Pantalla completa</button>
+  </div>
+  <div class="text">
+    <h1>Herramientas utilizadas</h1>
+    <h2>Sector técnico:</h2>
+    <ul>
+      <li>IDE: Visual Studio Code</li>
+    </ul>
+    <h1>Instrucciones</h1>
+    <p>Para mover las cartas se tiene que hacer click con el cursor en cualquier parte de la pantalla.
+      Entonces la carta irá a la posición del cursor.
+    </p>
   </div>
 </body>
 </html>
