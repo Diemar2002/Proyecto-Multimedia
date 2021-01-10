@@ -1,5 +1,7 @@
 const numProvincias = 52;
 
+var totalPopulation = 0;
+
 class Provincia {
     constructor(name, population) {
         this.name = name;
@@ -15,6 +17,8 @@ class Provincia {
         this.deaths = 0;
         this.recovered = 0;
         this.deathRate = 0.03;
+        // Parámetros para las cartas
+        this.quarantineStreak = 0;
         
         this.locked = false;
     }
@@ -87,25 +91,25 @@ let poblacionesProvincias = [
 cercaniaProvincias = [
     [49, 47, 26, 16],
     [11, 30, 38],
-    [38, 31, 4, 3],
+    [38, 31, 4, 3, 18],
     [2, 5, 4],
     [31, 7, 5, 3, 2],
     [42, 3, 4, 7, 41],
-    [], // Melilla
+    [19, 46], // Melilla
     [37, 31, 4, 5, 41],
-    [], // Baleares
-    [10, 11],
+    [20], // Baleares
+    [10, 11, 18],
     [12, 11, 9],
     [12, 30, 1, 9, 10],
     [33, 30, 11, 10],
     [51, 44, 48, 25, 24, 35, 32],
     [13, 25, 24, 35, 32],
-    [16, 26, 28, 43, 17],
+    [16, 26, 28, 43, 17, 18, 20],
     [0, 26, 15],
     [15, 43, 21],
-    [24, 28, 27, 36, 35],
-    [], // Ceuta
-    [21, 23, 22],
+    [24, 28, 27, 36, 35, 20, 9, 2, 15],
+    [6, 46], // Ceuta
+    [21, 23, 22, 18, 15],
     [17, 43, 41, 23, 20],
     [20, 23],
     [42, 41, 21, 20, 22],
@@ -125,7 +129,7 @@ cercaniaProvincias = [
     [27, 41, 7, 31, 36],
     [34, 31, 2, 1, 30],
     [40], // Las palmas
-    [39], // Santa Cruz de Tenerife
+    [39, 18], // Santa Cruz de Tenerife
     [43, 21, 23, 42, 5, 7, 37, 27],
     [5, 41, 23],
     [15, 17, 21, 41, 27, 28],
@@ -133,13 +137,14 @@ cercaniaProvincias = [
     [46, 44, 48, 47],
     [45, 44, 51],
     [45, 48, 50, 26, 0, 49],
-    [44, 45, 47, 50, 25, 13],
+    [44, 45, 47, 50, 25, 13, 18],
     [47, 0],
     [47, 26, 25, 48],
-    [46, 44, 13],
+    [46, 44, 13, 48],
 ];
 
 for (i = 0; i < 52; i++) {
     provincias.push(new Provincia(nombresProvincias[i], poblacionesProvincias[i]));
     provincias[i].cercanas = cercaniaProvincias[i];
+    totalPopulation += provincias[i].population;
 }

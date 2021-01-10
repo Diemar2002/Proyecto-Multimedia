@@ -12,7 +12,8 @@ var starter;
 // Variables específicas a los modos
 // Modo 1
 const deltaCard = 0.25;
-const deltaSim = 10 / 15;
+// const deltaSim = 10 / 15;
+const deltaSim = 0.1;
 
 gameStateSetups[1] = () => {
     availableCards.length = 0;
@@ -39,8 +40,12 @@ gameStateSetups[1] = () => {
     themeSong.forEach(song => {
         song.stop();
     });
-    // themeSong[0].play();
-    // themeSong[0].onended(() => {themeSong[1].loop();})
+
+    // Inicialización del tema principal
+    if (!(themeSong[0]._playing || themeSong[1]._playing || themeSong[2]._playing) && playMusic) {
+        themeSong[0].play();
+        themeSong[0].onended(() => {themeSong[1].loop();})
+    }
 }
 
 var availableCards = new Array();
@@ -60,7 +65,8 @@ gameStates[1] = () => { // Juego Principal¡
     infectionColoring.imageMode(CENTER);
     provinceMaps.forEach((provincia, index) => {
         let perc = (provincias[index].totalContagios / provincias[index].population) * 255;
-        infectionColoring.tint(perc, 255, 0);
+        let recp = (sq((provincias[index].recovered + provincias[index].deaths)) / provincias[index].population) * 255;
+        infectionColoring.tint(perc, 255, recp);
         infectionColoring.image(provincia, 0, 0, infectionColoring.width / factor * provincia.width / provincia.height, infectionColoring.height);
     });
     
@@ -102,6 +108,8 @@ gameStates[1] = () => { // Juego Principal¡
             }
             break;
         } case 1: { // Modo de cartas
+            if (availableCards.length == 0)
+                break;
             let cardToShow = Math.floor(timer / deltaCard);
             if (cardToShow < availableCards.length) {
                 if (prevCardShown != cardToShow) {
@@ -131,6 +139,8 @@ gameStates[1] = () => { // Juego Principal¡
 
     // image(infectionColoring, 0.5, 0.5, 1, 1);
     // Actualización de las barras de estado
+    contagiados.value = totalContagios / totalPopulation * 100;
+
     economia.update();
     felicidad.update();
     contagiados.update();
@@ -162,4 +172,17 @@ gameStates[1] = () => { // Juego Principal¡
     textAlign(RIGHT, TOP);
     text("Día: " + day, factor - 0.02 * factor, 0 + 0.02);
     pop();
+}
+
+function showMoreCards() {
+    let firstNotShown = availableCards.length - 1;
+    availableCards.every((card, i) => {
+        if (card.mode == 0) {
+            firstNotShown = i;
+            return false;
+        }
+        return true;
+    });
+    timer = firstNotShown * deltaCard;
+    prevCardShown = -1;
 }

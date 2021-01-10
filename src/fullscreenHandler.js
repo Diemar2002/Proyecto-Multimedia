@@ -33,3 +33,12 @@ function fullScreen() {
   
     factor = windowWidth / windowHeight;
   }
+
+function doubleClicked() {
+  if (onFullScreen) {
+    onFullScreen = false;
+    resizeCanvas(windowWidth * 0.5, windowHeight * 0.5);
+    infectionColoring.resizeCanvas(width, height);
+    document.body.style = "";
+  }
+}

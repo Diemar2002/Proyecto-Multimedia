@@ -57,8 +57,10 @@ class Card {
     static cardSpeed = 10;
     static cardSize = 0.6;
 
-    constructor(data) {
-        this.data = data;
+    constructor(text, accept, reject, ...args) {
+        this.accepted = accept;
+        this.rejected = reject;
+        this.args = args;
 
         this.order = -1;
         this.mode = 0
@@ -67,7 +69,7 @@ class Card {
         this.prevMode = 0;
         this.selecting = false;
         this.alive = true;
-        this.text = "";
+        this.text = text;
         this.inPosition = false;
     }
 
@@ -85,10 +87,14 @@ class Card {
             } else {
                 if (this.selecting) {
                     let playSound = true;
-                    if (this.objPosition.x <= screenBorder)
+                    if (this.objPosition.x <= screenBorder) {
                         this.mode = 2;
-                    else if (this.objPosition.x >= (1 - screenBorder))
+                        this.accepted(...this.args);
+                    }
+                    else if (this.objPosition.x >= (1 - screenBorder)) {
                         this.mode = 3;
+                        this.rejected(...this.args);
+                    }
                     else {
                         this.objPosition.set(0.5, 0.5);
                         playSound = false;
@@ -162,7 +168,7 @@ class Card {
                 textFont(ubuntuRegular);
                 textAlign(CENTER, CENTER);
                 fill(255);
-                text(this.text, 0, 0, (Card.cardSize * 13 / 15) / 2 / imageFactor, (Card.cardSize * 13 / 15) / 2);
+                text(this.text, 0, 0, (Card.cardSize * 13 / 15) / imageFactor / factor, (Card.cardSize * 13 / 15));
             pop();
         } else {
             rectMode(CENTER);

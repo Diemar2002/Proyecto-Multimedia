@@ -2,6 +2,7 @@
 <html onload="console.log('cargada')" lang="es">
 <head>
   <title>Project SARS</title>
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Proyecto interactivo de manejo de una pandemia en España">
@@ -19,6 +20,7 @@
   <!-- Misceláneo -->
   <script src="./assets/assets.js"></script>
   <script src="./src/fullscreenHandler.js"></script>
+  <script src="./src/soundManager.js"></script>
   <script src="./src/ui.js"></script>
   <script src="./src/main.js"></script>
   <!-- Modos -->
@@ -34,6 +36,7 @@
 <body>
   <div class="header">
     <h1>Project SARS</h1>
+    <img src="favicon.png" alt="Icono del proyecto">
   </div>
   <hr class="header">
   <div class="container">
@@ -47,16 +50,46 @@
     </div>
     <button onclick="fullScreen()">Pantalla completa</button>
   </div>
+  <div class="container options">
+    <button class="img"><img id="muteIcon" src="./assets/icons/soundOFF.png" alt="Activar sonido" onclick="alternateSound()"></button>
+    <input id="volume" type="range", class="slider", min="0", max="100", onchange="changeVolume()", value="50">
+    <button class="img"><img id ="muteMusic" src="./assets/icons/musicOFF.png" alt="Activar música" onclick="alternateMusic()"></button>
+  </div>
+  <hr class="internalSeparator">
   <div class="text">
-    <h1>Herramientas utilizadas</h1>
-    <h2>Sector técnico:</h2>
-    <ul>
-      <li>IDE: Visual Studio Code</li>
-    </ul>
+    <h1>Descripción</h1>
+    <p>
+      Este es un proyecto en el que hemos intentado mostrar la dificultad de las medidas que se tienen que tomar cuando se está en el
+      gobierno durante una pandemia. 
+      <br>
+      Obviamente, por falta de tiempo no hemos conseguido hacer la simulación muy realista. Aun así, creemos que consigue en hasta cierto
+      punto transmitir la sensación mencionada anteriormente.
+      Se puede considerar como una prueba de concepto, así que si teneis alguna idea para el proyecto nos gustaría que nos los comunicáseis
+      <i>(para más información ver apartado "Mecánicas que nos gustaría añadir")</i>
+    </p>
+  </div>
+  <div class="text">
     <h1>Instrucciones</h1>
     <p>Para mover las cartas se tiene que hacer click con el cursor en cualquier parte de la pantalla.
       Entonces la carta irá a la posición del cursor.
     </p>
+  </div>
+  <div class="text">
+    <h1>Herramientas y tecnologías utilizadas</h1>
+    <ul>
+      <li><strong>IDE:</strong> Visual Studio Code</li>
+      <li><strong>Librería gráfica:</strong> p5.js</li>
+      <li><strong>Librería de sonido:</strong> p5.js.sound</li>
+      <li><strong>Lenguaje de programación principal:</strong> JavaScript</li>
+      <li><strong>Lenguaje de shaders:</strong> GLSL</li>
+    </ul>
+  </div>
+  <div class="text">
+    <h1>Mecánicas que nos gustaría añadir</h1>
+    <p>Estas son algunas mecánicas que nos gustaría añadir al proyecto. Si tienes alguna sugerencia enviánosla al correo <span class="link">diego.moralesr@edu.uah.es</span></p>
+    <ul>
+      <li>Añadir más precisión en el control de las mascarillas y los confinamientos (por edades, si están contagiados, etc.)</li>
+    </ul>
   </div>
 </body>
 </html>

@@ -33,6 +33,7 @@ gameStates[2] = () => {
 
 class Virus {
     static maxspeed = 0.2;
+    static maxw = Math.PI / 4;
     static maxsize = 0.3;
     static minsize = 0.01;
 
@@ -41,9 +42,12 @@ class Virus {
         this.velocity = new p5.Vector(random(-Virus.maxspeed, Virus.maxspeed), random(-Virus.maxspeed, Virus.maxspeed));
         this.size = random(Virus.minsize, Virus.maxsize);
         this.virusID = Math.floor(random() * 100 / 50);
+        this.w = random(-Virus.maxw, Virus.maxw);
+        this.angle = 0;
     }
 
     update() {
+        this.angle += this.w * deltaTime / 1000;
         this.position.add(p5.Vector.mult(this.velocity, deltaTime / 1000));
         if (this.position.x <  -Virus.maxsize)
             this.position.x = 1 + Virus.maxsize;
@@ -56,6 +60,11 @@ class Virus {
     }
 
     render() {
-        image(icons[8 + this.virusID], this.position.x, this.position.y, this.size / factor * icons[8 + this.virusID].width / icons[8 + this.virusID].height, this.size);
+        push();
+        translate(this.position.x, this.position.y);
+        scale(1 / factor, 1);
+        rotate(this.angle);
+        image(icons[8 + this.virusID], 0, 0, this.size * icons[8 + this.virusID].width / icons[8 + this.virusID].height, this.size);
+        pop();
     }
 }

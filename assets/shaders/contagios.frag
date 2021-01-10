@@ -58,8 +58,10 @@ void main() {
   float rnoise = rand2D(uv);
   float noise = float(tex.r >= 0.01) * DotNoise2D(uv , -0.01, 0.988, tex.r / 2.) + float(rnoise < tex.r) * 0.65;
   vec4 color;
-  color.a = noise * tex.a * float(tex.g >= 0.93);
+  color.a = noise * tex.a * (float(tex.g >= 0.93) + tex.b);
+  // color.a = tex.a;
   color.r = 1.;
+  // color.r = tex.b;
 
   gl_FragColor = vec4(color);
 }

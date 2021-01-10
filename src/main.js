@@ -15,6 +15,12 @@ function setup() {
 
     imageMode(CENTER);
     changeGameState(2);
+
+    masterVolume(0);
+
+    themeSong.forEach(song => {
+        song.setVolume(0.2);
+    });
 }
 
 // Array de gameStates

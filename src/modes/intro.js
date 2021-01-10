@@ -9,7 +9,7 @@ var intro_MP = true;
 intro_timer = 0;
 intro_times = [
     1, // Fade in
-    5, // Primer texto
+    15, // Primer texto
     1, // Fade out
 ];
 
@@ -46,8 +46,9 @@ gameStates[0] = () => {
                 stroke(0);
                 background(0);
                 textAlign(CENTER, CENTER);
-                textSize(0.1);
+                textSize(0.075);
                 textFont(ubuntuLight);
+                rectMode(CENTER);
                 fill(0);
                 break;
             case 2: // Fade out
@@ -66,7 +67,8 @@ gameStates[0] = () => {
         background(0);
         fill(255);
         scale(1 / factor, 1);
-        text("Introducción", 0.5 * factor, 0.5);
+        const textOffset = 0.1;
+        text("El virus SARS-cov-2, más conocido como coronavirus, acaba de llegar a España. Eres el presidente de España, Peter Xanchez, y tu misión será dirigir el país de tal manera que proteja a los ciudadanos españoles y que no destruya la economía del país. Buena suerte…", 0.5 * factor, 0.5, (1 - 2 * textOffset) * factor, 1 - 2 * textOffset);
         break;
         case 2: {// Fade out
             let prog = (cummulative - intro_timer) / intro_times[currentStep];

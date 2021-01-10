@@ -1,5 +1,9 @@
 let day = 0;
 let data = [];
+var nextEvents = [];
+
+var globalLockdown = false;
+var totalContagios = 0;
 
 function simulationStep() {
     // Variables
@@ -7,13 +11,14 @@ function simulationStep() {
 
     let buffProvincias = [...provincias];
 
+    totalContagios = 0;
     // ---------------------------------------
     provincias.forEach((provincia, index) => {
         // Contagios intraprovinciales
         // Simulación de cada provincia
         let R0 = baseR0;
         // Reducción por el uso de mascarillas
-        let p = provincia.maskUsage;
+        let p = provincia.maskUsage /* Funcionamiento de la felicidad */;
         let q = 1 - p;
         R0 *= (q * q) + 2 * (p * q) * 0.3 + (p * p) * 0.05;
         // Aplicación del R0
@@ -44,6 +49,8 @@ function simulationStep() {
         });
         // Aplicación de las variables al R0
 
+        
+
         // Cálculo de los contagios (por ahora sin tener en cuenta las cuarentenas)
         newCases = R0 * viralActive * probSuitable / 10;
         
@@ -58,15 +65,17 @@ function simulationStep() {
         
         // Contagios interprovinciales
         let traspassPotencial = 0.01; // Posibilidad de que una persona ignore las medidas de bloqueo de provincia
-        let interMultiplier = provincia.locked ? traspassPotencial:1;
         let percentMoved = 0.013404; // Porcentaje de la población que se mueve entre provincias al día (aproximación burda, pero no tengo más datos)
         provincia.cercanas.forEach(element => {
             let buff = buffProvincias[element];
+            let interMultiplier = (provincia.locked || buff.locked) ? traspassPotencial:1;
             let suitableProb = (buff.population - buff.deaths - buff.recovered - buff.totalContagios) / buff.population;
             buff.contagios[0] += suitableProb * percentMoved * provincia.totalContagios * interMultiplier * R0 / 10;
         });
         if (provincia.totalContagios > provincia.population)
             provincia.totalContagios = provincia.population;
+
+        totalContagios += provincia.totalContagios;
     }); 
 
     provincias = [...buffProvincias];
