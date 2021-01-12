@@ -15,7 +15,7 @@ var endCause = -1;
 // Modo 1
 const deltaStep = 7 // Días para que salgan nuevas opciones
 const deltaCard = 0.25;
-const deltaSim = 10 / deltaStep;
+const deltaSim = 6 / deltaStep;
 // const deltaSim = 0.1;
 
 gameStateSetups[1] = () => {

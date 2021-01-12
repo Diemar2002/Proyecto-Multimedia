@@ -45,7 +45,7 @@ const t_recomendacionMascarillas_i = "El número de contagios en "; // Nombre de
 const t_recomendacionMascarillas_ii = " es ligeramente elevado.\n¿Recomendar el uso de mascarillas?";
 
 const t_g_recomendacionMascarillas_i = "El número de contagios en "; // Número de provincias
-const t_g_recomendacionMascarillas_ii = " es ligeramente elevado.\n¿Recomendar el uso de mascarillas?";
+const t_g_recomendacionMascarillas_ii = " provincias es ligeramente elevado.\n¿Recomendar el uso de mascarillas?";
 
 const t_confinamientoNew_i = "El número de contagios en "; // Nombre de provincia
 const t_confinamientoNew_ii = " es alto.\n¿Se pone en cuarentena?";
@@ -147,7 +147,7 @@ const cp_jovenes = 1 - cp_medicosyancianos + cp_trabajadores;
 
 // Mensajes del final
 endMessages = [
-    "España sufre una tremenda crisis gradias a tu pésima gestión del país.",
+    "España sufre una tremenda crisis gracias a tu pésima gestión del país.",
     "Nadie en tu país te quiere como líder del gobierno, por lo que eres expulsado de la presidencia y te enfrentas a cargos por atentar contra la salud de los habitantes de España",
     "Enhorabuena, has conseguido combatir al virus."
 ];
