@@ -90,10 +90,12 @@ class Card {
                     if (this.objPosition.x <= screenBorder) {
                         this.mode = 2;
                         this.accepted(...this.args);
+                        updateBars();
                     }
                     else if (this.objPosition.x >= (1 - screenBorder)) {
                         this.mode = 3;
                         this.rejected(...this.args);
+                        updateBars();
                     }
                     else {
                         this.objPosition.set(0.5, 0.5);

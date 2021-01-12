@@ -9,11 +9,14 @@ var timer = 0;
 var prevSim = 0;
 var starter;
 
+var endCause = -1;
+
 // Variables específicas a los modos
 // Modo 1
+const deltaStep = 7 // Días para que salgan nuevas opciones
 const deltaCard = 0.25;
-// const deltaSim = 10 / 15;
-const deltaSim = 0.1;
+const deltaSim = 10 / deltaStep;
+// const deltaSim = 0.1;
 
 gameStateSetups[1] = () => {
     availableCards.length = 0;
@@ -24,12 +27,42 @@ gameStateSetups[1] = () => {
     provincias.forEach(provincia => {
         provincia.contagios.fill(0);
         provincia.totalContagios = 0;
-        provincia.recovered = 0;
-        provincia.deaths = 0;
-        provincia.maskUsage = 0;
-        provincia.locked = false;
         provincia.confinada = false;
+        provincia.maskUsage = 0;
+        provincia.deaths = 0;
+        provincia.recovered = [0, 0, 0];
+        provincia.deathRate = 0.03;
+        // Parámetros para las cartas
+        provincia.quarantineStreak = 0;
+
+        provincia.totalRecovered = 0;
+        
+        provincia.locked = false;
+
     });
+    totalContagios = 0;
+    totalRecovered = 0;
+    endCause = -1;
+    day = 0;
+    vaccineProgress = 0;
+    // Restablecer las flags
+    flag_investingOnVaccine = false;
+    flag_vaccinating = [false, false, false];
+    flag_fronteras = false;
+    flag_reuniones = false;
+    flag_toquedequeda = false;
+    flag_comercios = [false, false, false];
+    globalLockdown = false;
+    canVaccinate = [true, true, true];
+    
+
+    economia.value = 100;
+    economia.valueDisplayed = economia.value;
+    felicidad.value = 100;
+    felicidad.valueDisplayed = felicidad.value;
+    contagiados.value = 0;
+    contagiados.valueDisplayed = contagiados.value;
+
     starter = provincias[Math.floor(random(52))];
     starter.contagios[0] = 2;
     // ---------------------------------------------------
@@ -65,7 +98,7 @@ gameStates[1] = () => { // Juego Principal¡
     infectionColoring.imageMode(CENTER);
     provinceMaps.forEach((provincia, index) => {
         let perc = (provincias[index].totalContagios / provincias[index].population) * 255;
-        let recp = (sq((provincias[index].recovered + provincias[index].deaths)) / provincias[index].population) * 255;
+        let recp = (sq((provincias[index].totalRecovered + provincias[index].deaths)) / provincias[index].population) * 255;
         infectionColoring.tint(perc, 255, recp);
         infectionColoring.image(provincia, 0, 0, infectionColoring.width / factor * provincia.width / provincia.height, infectionColoring.height);
     });
@@ -102,7 +135,7 @@ gameStates[1] = () => { // Juego Principal¡
                 prevSim = sim;
                 simulationStep();
             }
-            if (sim >= 15) { // Han pasado los 15 días
+            if (sim >= deltaStep) { // Han pasado los días
                 microState = 1; // Se pasa al modo cartas
                 updateCards();
             }
@@ -172,6 +205,17 @@ gameStates[1] = () => { // Juego Principal¡
     textAlign(RIGHT, TOP);
     text("Día: " + day, factor - 0.02 * factor, 0 + 0.02);
     pop();
+
+    // Condiciones de fin de juego
+    if (economia.valueDisplayed <= 3)
+        endCause = 0;
+    if (felicidad.valueDisplayed <= 0)
+        endCause = 1;
+    if (totalContagios < 1 && totalContagios != 0)
+        endCause = 2;
+    
+    if (endCause != -1)
+        changeGameState(3);
 }
 
 function showMoreCards() {

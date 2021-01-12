@@ -33,6 +33,7 @@ body::-webkit-scrollbar {
 }
 
 #gameZone canvas {
+  margin-top: 33px;
   transition: width 0.1s;
   transition: height 0.1s;
 }
@@ -66,7 +67,8 @@ hr.header {
 
 .text {
   width: 75vw;
-  height: min-content;
+  height: fit-content;
+  overflow:hidden;
   margin: auto;
   margin-bottom: 20px;
   margin-top: 20px;
@@ -78,6 +80,8 @@ hr.header {
   color: #2e3440;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: justify;
+
+  transition: height 0.2s;
 }
 
 h1.text, h2.text, h3.text {
@@ -188,4 +192,53 @@ button.img {
   border-radius: 50%;
   background: #4CAF50;
   cursor: pointer;
+}
+
+ul.navbar {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 75vw;
+  height: fit-content;
+  background-color: #ececec;
+  border-radius: 5px;
+  margin: auto;
+  color: #2e3440;
+  margin-top: 33px;
+  margin-bottom: 33px;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px;
+}
+
+ul.navbar > li {
+  display: inline;
+  transition: color 0.25s;
+}
+
+a:link {
+  text-decoration: none;
+  color: #2e3440;
+  transition: color 0.25s;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #2e3440;
+  transition: color 0.25s;
+}
+
+a:hover {
+  color: black;
+}
+
+/* Imágenes */
+.embeddedImg {
+  width: 50%;
+  margin: auto;
+  display: block;
+  border: solid 5px #2e3440;
+  border-radius: 15px;
+  background-color: #2e3440;
 }

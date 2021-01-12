@@ -27,8 +27,13 @@ gameStates[2] = () => {
 
     let mx = mouseX / width;
     let my = mouseY / height;
-    if (mouseIsPressed && mx > 0 && mx < 1 && my > 0 && my < 1)
+    if (mouseIsPressed && (mx > 0) && (mx < 1) && (my > 0) && (my < 1) && (!intro_MP)) {
+        intro_MP = true;
         changeGameState(0);
+    }
+    
+    if (!mouseIsPressed)
+        intro_MP = false;
 }
 
 class Virus {

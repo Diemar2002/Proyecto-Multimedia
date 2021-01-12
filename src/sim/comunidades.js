@@ -15,10 +15,12 @@ class Provincia {
         this.confinada = false;
         this.maskUsage = 0;
         this.deaths = 0;
-        this.recovered = 0;
+        this.recovered = [0, 0, 0];
         this.deathRate = 0.03;
         // Parámetros para las cartas
         this.quarantineStreak = 0;
+
+        this.totalRecovered = 0;
         
         this.locked = false;
     }

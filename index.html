@@ -8,6 +8,7 @@
   <meta name="description" content="Proyecto interactivo de manejo de una pandemia en España">
   <link rel="stylesheet" href="style.css">
   
+  <script src="./src/allpercents.js"></script>
   <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
   <script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
   <script src="./libraries/p5.sound.js"></script>
@@ -17,6 +18,7 @@
   <script src="./src/sim/comunidades.js"></script>
   <script src="./src/sim/simulation.js"></script>
   <script src="./src/sim/updateCards.js"></script>
+  <script src="./src/sim/vaccine.js"></script>
   <!-- Misceláneo -->
   <script src="./assets/assets.js"></script>
   <script src="./src/fullscreenHandler.js"></script>
@@ -27,6 +29,7 @@
   <script src="./src/modes/intro.js"></script>
   <script src="./src/modes/mainGame.js"></script>
   <script src="./src/modes/mainMenu.js"></script>
+  <script src="./src/modes/end.js"></script>
 
   <!-- This line removes any default padding and style.
        You might only need one of these values set. -->
@@ -34,11 +37,18 @@
 </head>
 
 <body>
-  <div class="header">
+  <div class="header" id="header">
     <h1>Project SARS</h1>
     <img src="favicon.png" alt="Icono del proyecto">
   </div>
   <hr class="header">
+  <ul class="navbar">
+    <li><a href="#Descripcion">Descripción</a></li>
+    <li><a href="#Instrucciones">Instrucciones</a></li>
+    <li><a href="#Herramientas">Herramientas y tecnologías</a></li>
+    <li><a href="#TODO">Futuras mecánicas</a></li>
+    <li><a href="#Agradecimientos">Agradecimientos</a></li>
+  </ul>
   <div class="container">
     <div id="gameZone">
       <div id="p5_loading" class="loadingclass">
@@ -51,13 +61,19 @@
     <button onclick="fullScreen()">Pantalla completa</button>
   </div>
   <div class="container options">
-    <button class="img"><img id="muteIcon" src="./assets/icons/soundOFF.png" alt="Activar sonido" onclick="alternateSound()"></button>
+    <button class="img"><img id="muteIcon" src="./assets/icons/soundON.png" alt="Activar sonido" onclick="alternateSound()"></button>
     <input id="volume" type="range", class="slider", min="0", max="100", onchange="changeVolume()", value="50">
     <button class="img"><img id ="muteMusic" src="./assets/icons/musicOFF.png" alt="Activar música" onclick="alternateMusic()"></button>
   </div>
   <hr class="internalSeparator">
-  <div class="text">
+  <div class="text" id="Descripcion">
     <h1>Descripción</h1>
+    <p style="text-align: center; text-decoration:underline;"><strong >EN EL ESTADO ACTUAL EL SIMULADOR NO ESTÁ BALANCEADO POR FALTA DE TIEMPO</strong></p>
+    <p>
+      El simulador no se encuentra en un estado en el que represente correctamente la situación. Para ello necesitan ser balanceadas las causas y consecuencias
+      de las distintas opciones presentes. Todo el contenido del simulador se encuentra en esta versión por lo que actúa como prueba de concepto.
+      Para la mejora del 25 se intentará que esté completamente balanceado. Gracias por entenderlo.
+    </p>
     <p>
       Este es un proyecto en el que hemos intentado mostrar la dificultad de las medidas que se tienen que tomar cuando se está en el
       gobierno durante una pandemia. 
@@ -68,13 +84,58 @@
       <i>(para más información ver apartado "Mecánicas que nos gustaría añadir")</i>
     </p>
   </div>
-  <div class="text">
+  <div class="text" id="Instrucciones">
     <h1>Instrucciones</h1>
-    <p>Para mover las cartas se tiene que hacer click con el cursor en cualquier parte de la pantalla.
-      Entonces la carta irá a la posición del cursor.
+    <ul>
+      <li><strong>¿Cómo se gana?</strong> para poder ganar la partida tienes que conseguir que haya el menor número de contagios posibles teniendo en cuenta
+        la economía del país y la felicidad de la población. Además, tienes que llegar a conseguir la vacuna.
+      </li>
+      <li><strong>¿Cómo se pierde?</strong> Si la barra de economía llega a 0 o la barra de contagios llega al máximo ...</li>
+    </ul>
+    <h2>Controles</h2>
+    <p>
+      Al cargar la página te encontrarás con un mapa de España político dividio en provincias. Y en la esquna superior izquierda tres
+      barras.
+    </p>
+    <img class="embeddedImg" src="./page_assets/mapa ingame.png" alt="mapa del simualdor">
+    <p>Esta es la barra de contagios. A medida que va pasando el tiempo irán aumentando los contagios. Tendrás que ir tomando
+      medidas para poder controlar los contagios, pero ten cuidado y no llegues al 100% de infectados o perderás.
+    </p>
+    <img src="./page_assets/barra contagios.png" alt="barra de contagios" class="embeddedImg" style="width: 25%;">
+    <p>Esta es la barra de economía, donde está todo el presupuesto que tienes para poder superar esta pandemia, a medida
+      que vas tomando medidas conseguirás o perderás dinero. Intenta no llegar a 0 o perderás.
+    </p>
+    <img src="./page_assets/barra economia.png" alt=" barra de economía" class="embeddedImg" style="width: 25%;">
+    <p>Esta es la barra de felicidad. Esta aumentará o disminuirá dependiendo de las medidas que vayas tomando a lo largo de la partida.
+      El nivel de felicidad de la población está diréctamente relaccionada con las probabilidades de que la población siga las medidas
+      impuestas. Por lo que se tiene que mantener a la población feliz para que las medidas tomadas sean efectivas.
+    </p>
+    <img src="./page_assets/barra felicidad.png" alt="barra de felicidad del pueblo" class="embeddedImg" style="width: 25%;">
+    <p>Cada cierto tiempo irán apareciendo cartas con diferentes efectos, algunas reducen los contagios pero también reducirán la
+      economía y muchas veces la felicidad del pueblo. Otras subirán la felicidad del pueblo o la economía pero también aumentarán
+      los contagios. Es tu trabajo conseguir que estas tres variables estén balanceadas. <br>
+      Para ello, cuando se presente una carta, tendrás que indicar si quieres aceptar o recharzar la propuesta. Para <strong>aceptarla</strong>
+      tendrás que arrastrar la carta hacia la izquierda. Para <strong>recharzarla</strong> tendrás que arrastrarla hacia la derecha.
+      <img src="./page_assets/cartas2.png" alt="esquema de selección de cartas" class="embeddedImg">
+      <p>Debajo de la pantalla del juego hay una barra de opciones que permite regular el volumen del sonido, así como activarlo y
+        desactivarlo. Además, hay un control independiente que permite activar o desactivar la música.
+      </p>
+      <img src="./page_assets/Control de sonidos.png" alt="barra de control del sonido" class="embeddedImg">
+      <h2>Indicación de los contagios</h2>
+      <p>A medida que vayan aumentando los contagios irán apareciendo puntitos rojos en el mapa, indicando el porcentaje de la
+        población que está infectada. Por lo que se tiene que evitar a toda costa que aumente la concentración de puntitos.
+      </p>
+      <img src="./page_assets/contagios.png" alt="mapa de demostración con contagos" class="embeddedImg">
+    </p>
+    <h2>Vacuna</h2>
+    <p>El objetivo final es consegur la vacuna. Esta estará siempre avanzando a un ritmo lento gracias a las investigaciones de otros paises</p>
+    <p>Si se quiere hacer que la investigación de la vacuna aumente más rápido se podrá invertir en investigacón a un costo de la economía</p>
+    <p>
+      Cuando la vacuna ya está completamente desarrollada, se puede seleccionar a que grupo de población se quere vacunar. Cada grupo tiene sus
+      ventajas y desventajas.
     </p>
   </div>
-  <div class="text">
+  <div class="text" id="Herramientas">
     <h1>Herramientas y tecnologías utilizadas</h1>
     <ul>
       <li><strong>IDE:</strong> Visual Studio Code</li>
@@ -83,13 +144,35 @@
       <li><strong>Lenguaje de programación principal:</strong> JavaScript</li>
       <li><strong>Lenguaje de shaders:</strong> GLSL</li>
     </ul>
+    <p>La página, así como toda la decoración y estilos está creada desde cero con <strong>HTML</strong> y <strong>CSS</strong>
+      Así como prácticamente todos los elementos del simulador en <strong>JavaScript</strong>
+    </p>
+    <p>Haz click aquí para acceder al código: <span class="link"><a href="https://github.com/Diemar2002/Proyecto-Multimedia" target="_blank" style="color: #0772ff;">código</a></span></p>
   </div>
-  <div class="text">
+  <div class="text" id="TODO">
     <h1>Mecánicas que nos gustaría añadir</h1>
     <p>Estas son algunas mecánicas que nos gustaría añadir al proyecto. Si tienes alguna sugerencia enviánosla al correo <span class="link">diego.moralesr@edu.uah.es</span></p>
+    <p>La mayoría, si no todas las siguientes mecánicas serán implementadas para el día 25</p>
     <ul>
       <li>Añadir más precisión en el control de las mascarillas y los confinamientos (por edades, si están contagiados, etc.)</li>
+      <li>Balancear las consecuencias de las elecciones</li>
+      <li>Mejorar la simulacón</li>
+      <li>Cambio de la escala de la barra de contagios. Lineal -> logarítmica</li>
+      <li>Arreglar bugs. Si encontrais algún bug enviadlo al correo</li>
+      <li>Implementación del icono de vacuna</li>
+      <li>Implementación de los eventos</li>
     </ul>
+  </div>
+  <div class="text" id="Agradecimientos">
+    <h1>Agradecimientos</h1>
+    <ul>
+      <li><strong>Música: </strong><span class="link"><a href="https://soundcloud.com/rarp14" target="_blank" style="color: #0772ff">RARP MUSIC</a></span></li>
+      <li><strong>Sonidos: </strong><span class="link"><a href="freesound.org" target="_blank" style="color: #0772ff">Freesound</a></span></li>
+    </ul>
+  </div>
+  <hr class="internalSeparator">
+  <div class="text" style="width:fit-content; border-radius: 5px;">
+    <p><a href="#header">Volver arriba</a></p>
   </div>
 </body>
 </html>

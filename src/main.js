@@ -16,7 +16,7 @@ function setup() {
     imageMode(CENTER);
     changeGameState(2);
 
-    masterVolume(0);
+    masterVolume(0.5);
 
     themeSong.forEach(song => {
         song.setVolume(0.2);
@@ -30,10 +30,13 @@ var gameStateSetups = [];
 
 function changeGameState(newState) {
     gameState = newState;
+    intro_MP = true;
     gameStateSetups[newState]();
 }
 
 function draw() { // Bucle principal
+    if (!mouseIsPressed)
+        intro_MP = false;
     if (!focused && gameState != 2)
         return;
     scale(width, height);

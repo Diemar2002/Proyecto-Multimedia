@@ -6,11 +6,12 @@ function none(provincia) {
 
 }
 
+// Cuarentena
+
 function quarantine(provincia) {
     provincia.confinada = true;
     provincia.quarantineStreak += 1;
     // Cambio de la felicidad
-    felicidad.value -= ((0.05 * felicidad.value) ** provincia.quarantineStreak) * provincia.population / totalPopulation * 100;
 } 
 
 function unquarantine(provincia) {
@@ -30,8 +31,10 @@ function unquarantineAll(provincias) {
     });
 }
 
-function mask(provincia) {
-    provincia.maskUsage = 1;
+// Mascarilla
+
+function mask(provincia, percent) {
+    provincia.maskUsage = percent;
 }
 
 function unmask(provincia) {
@@ -39,9 +42,9 @@ function unmask(provincia) {
     globalLockdown = false;
 }
 
-function maskAll(provincias) {
+function maskAll(provincias, perc) {
     provincias.forEach(provincia => {
-        mask(provincia);
+        mask(provincia, perc);
     });
 }
 
@@ -51,12 +54,42 @@ function unmaskAll(provincias) {
     });
 }
 
+// Cuarentena global
+
 function globalQuarantine() {
     provincias.forEach(provincia => {
         provincia.confinada = true;
     });
     globalLockdown = true;
 }
+
+// Cierre de fronteras 
+
+function close(provincia) {
+    provincia.locked = true;
+}
+
+function open(provincia) {
+    provincia.locked = false;
+}
+
+function closeAll(provincias) {
+    provincias.forEach(provincia => {
+        provincia.close();
+    });
+}
+
+function openAll(provincias) {
+    provincias.forEach(provincia => {
+        provincia.open();
+    });
+}
+
+// ---------------------------------------
+// Vacunas -------------------------------
+
+
+
 // ---------------------------------------
 
 function updateCards() {
@@ -66,7 +99,7 @@ function updateCards() {
 
     let buff = [];
     events.forEach((event, i) => {
-        if ((event["p"] / 3) > random())
+        if ((event["p"] / 6) > random())
             buff.push(i);
     });
     // ------------------------
@@ -120,23 +153,22 @@ function updateCards() {
     });
 
     let globalLockdownAvailable = false
-    if ((newQuarantine.length + oldQuarantine.length) >= (numProvincias / 4))
+    if ((totalContagios / totalPopulation) >= cp_cuarentenaGeneral)
         globalLockdownAvailable = true;
-    console.log(newQuarantine.length, oldQuarantine.length, numProvincias / 2);
     
     function showQuarantine(oldQ, newQ) {
-        if (oldQ.length >= 5) {
-            availableCards.push(new Card("El número de contagios en " + oldQ.length + " provincias sigue siendo alto.\n¿Se mantienen en cuarentena?",quarantineAll , none, oldQ));
+        if (oldQ.length >= numUntilGroup) {
+            availableCards.push(new Card(t_g_confinamientoOld_i + oldQ.length + t_g_confinamientoOld_ii ,quarantineAll , none, oldQ));
         } else {
             oldQ.forEach(provincia => {
-                availableCards.push(new Card("El número de contagos en " + provincia.name + " sigue siendo alto.\n¿Se mantiene la cuarentena?", quarantine, unquarantine, provincia));
+                availableCards.push(new Card(t_confinamientoOld_i + provincia.name + t_confinamientoOld_ii, quarantine, unquarantine, provincia));
             });
         }
-        if (newQ.length >= 5) {
-            availableCards.push(new Card("El número de contagios en " + newQ.length + " provincias es alto.\n¿Se ponen en cuarentena?",quarantineAll , none, newQ));
+        if (newQ.length >= numUntilGroup) {
+            availableCards.push(new Card(t_g_confinamientoNew_i + newQ.length + t_g_confinamientoNew_ii, quarantineAll , none, newQ));
         } else {
             newQ.forEach(provincia => {
-                availableCards.push(new Card("El número de contagios en " + provincia.name + " es alto.\n¿Se pone en cuarentena?", quarantine, unquarantine, provincia));
+                availableCards.push(new Card(t_confinamientoNew_i + provincia.name + t_confinamientoNew_ii, quarantine, unquarantine, provincia));
             });
         }
     }
@@ -144,32 +176,97 @@ function updateCards() {
     if (!globalLockdownAvailable)
         showQuarantine(oldQuarantine, newQuarantine);
     else {
-        availableCards.push(new Card("Los casos por toda España están creciendo.\n¿Imponer una cuarentena en todo el país?", globalQuarantine, () => {showQuarantine(oldQuarantine, newQuarantine); showMoreCards();}));
+        availableCards.push(new Card(t_cuarentenageneral, globalQuarantine, () => {showQuarantine(oldQuarantine, newQuarantine); showMoreCards();}));
     }
     
     // Mascarillas ---------------------------------------------------------------------------
 
-    let masks = [];
+    // Obligación mascarillas
+    let masksO = [];
     provincias.forEach(provincia => {
         let percInfected = provincia.totalContagios / provincia.population;
-        if (percInfected >= percToMask)
-            masks.push(provincia);
+        if (percInfected >= cp_obligacionMascarillas)
+            masksO.push(provincia);
     });
 
-    if (masks.length >= 5) {
-        availableCards.push(new Card("El número de contagios en " + masks.length + " provincias es elevado.\n¿Obligar a llevar mascarillas", maskAll, unmaskAll, masks));
+    if (masksO.length >= numUntilGroup) {
+        availableCards.push(new Card(t_g_obligacionMascarillas_i + masksO.length + t_g_olbligacionMascarillas_ii, maskAll, unmaskAll, masksO, maskUsageObligatory));
     } else {
-        masks.forEach(provincia => {
-            availableCards.push(new Card("El número de contagios en " + provincia.name + " es elevado.\n¿Obligar a llevar mascarillas?", mask, unmask, provincia));
+        masksO.forEach(provincia => {
+            availableCards.push(new Card(t_obligacionMascarillas_i + provincia.name + t_obligacionMascarillas_ii, mask, unmask, provincia, maskUsageObligatory));
         });
     }
+    // Recomendación de mascarillas
+    let masksR = [];
+    provincias.forEach(provincia => {
+        let percInfected = provincia.totalContagios / provincia.population;
+        if ((percInfected >= cp_recomendacionMascarillas) && !(masksO.includes(provincia)))
+            masksR.push(provincia);
+    });
+
+    if (masksR.length >= numUntilGroup) {
+        availableCards.push(new Card(t_g_recomendacionMascarillas_i + masksR.length + t_g_recomendacionMascarillas_ii, maskAll, unmaskAll, masksR, maskUsageRecommended));
+    } else {
+        masksR.forEach(provincia => {
+            availableCards.push(new Card(t_recomendacionMascarillas_i + provincia.name + t_recomendacionMascarillas_ii, mask, unmask, provincia, maskUsageRecommended));
+        });   
+    }
     
-    // Cierre de fronteras
+    // #######################################################################################
+    // Cartas de flags #######################################################################
+    /*
+     * Flags:
+     * Cierre de fronteras
+     * Toque de queda
+     * Límite de personas en las reuniones
+     * -- Relacionadas con los comercios --
+     * Límite de aforo
+     * Comercos de ocio cerrados
+     * Comercios como los bares cerrados
+     */
+
+    let availableFlags = [];
+    
+    // Añadir las flags
+    // let closeProvinces = [];
+    let globalPerc = totalContagios / totalPopulation;
+    if ((globalPerc >= cp_fronteras) && !flag_fronteras) // Cierre de fronteras
+        availableFlags.push(new Card(t_fronteras, () => {flag_fronteras = true;}, () => {flag_fronteras = false;}));
+    else
+        flag_fronteras = false; // Cuando se deja de cumplir la condición se vuelven a abrir las fronteras automáticamente
+    // Toque de queda
+    if ((globalPerc >= cp_toquequeda) && !flag_toquedequeda)
+        availableFlags.push(new Card(t_toquequeda, () => {flag_toquedequeda = true;}, () => {flag_toquedequeda = false;}));
+    else
+        flag_toquedequeda = false;
+    // Límite de personas en las reuniones
+    if ((globalPerc >= cp_reuniones) && !flag_reuniones && !globalLockdown)
+        availableFlags.push(new Card(t_reuniones, () => {flag_reuniones = true;}, () => {flag_reuniones = false;})) 
+    else
+        flag_reuniones = false;
+    // ----------------
+
+    function showAllFlags(flags) {
+        flags.forEach(flag => {
+            availableCards.push(flag);
+        });
+        showMoreCards();
+    }
+
+
+    if (availableFlags.length != 0)
+        availableCards.push(new Card("Existen otras medidas que se pueden tomar.\n¿Mostrarlas?", showAllFlags, none, availableFlags));
+
+
+    // ######################################################################################
+    // Vacunas ------------------------------------------------------------------------------
+
+    updateVaccines();
 
     // #######################################################################################
-    // Primera quincena ######################################################################
+    // Primer step ###########################################################################
 
-    if (day <= 15)
+    if (day <= deltaStep)
         availableCards.push(new Card("Se detectan los primeros casos en " + starter.name, none, none));
 
     // --------------------------------------
