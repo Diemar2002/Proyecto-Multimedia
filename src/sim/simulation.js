@@ -140,14 +140,17 @@ function updateBars() {
         economia.value -= economia.value * cp_e_reuniones;
     }
     // Límites en los comercios
+    // Límite de aforo
     if (flag_comercios[0]) {
         felicidad.value -= felicidad.value * cp_f_limiteAforo;
         economia.value -= economia.value * cp_e_limiteAforo;
     }
+    // Cierre de los locales de ocio
     if (flag_comercios[1]) {
         felicidad.value -= felicidad.value * cp_f_ocio;
         economia.value -= economia.value * cp_e_ocio;
     }
+    // Cierre de los bares
     if (flag_comercios[2]) {
         felicidad.value -= felicidad.value * cp_f_bares;
         economia.value -= economia.value * cp_e_bares;
@@ -157,7 +160,7 @@ function updateBars() {
         felicidad.value -= felicidad.value * cp_f_toquequeda;
         economia.value -= economia.value * cp_e_toquequeda;
     }
-    
+
     provincias.forEach(provincia => {
         let perc = provincia.population / totalPopulation;
         if (provincia.confinada) {

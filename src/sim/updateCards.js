@@ -230,20 +230,42 @@ function updateCards() {
     // Añadir las flags
     // let closeProvinces = [];
     let globalPerc = totalContagios / totalPopulation;
-    if ((globalPerc >= cp_fronteras) && !flag_fronteras) // Cierre de fronteras
-        availableFlags.push(new Card(t_fronteras, () => {flag_fronteras = true;}, () => {flag_fronteras = false;}));
-    else
+    if (globalPerc >= cp_fronteras) { // Cierre de fronteras
+        if (!flag_fronteras)
+            availableFlags.push(new Card(t_fronteras, () => {flag_fronteras = true;}, () => {flag_fronteras = false;}));
+    } else
         flag_fronteras = false; // Cuando se deja de cumplir la condición se vuelven a abrir las fronteras automáticamente
     // Toque de queda
-    if ((globalPerc >= cp_toquequeda) && !flag_toquedequeda)
-        availableFlags.push(new Card(t_toquequeda, () => {flag_toquedequeda = true;}, () => {flag_toquedequeda = false;}));
-    else
+    if (globalPerc >= cp_toquequeda) {
+        if (!flag_toquedequeda)
+            availableFlags.push(new Card(t_toquequeda, () => {flag_toquedequeda = true;}, () => {flag_toquedequeda = false;}));
+    } else
         flag_toquedequeda = false;
     // Límite de personas en las reuniones
-    if ((globalPerc >= cp_reuniones) && !flag_reuniones && !globalLockdown)
-        availableFlags.push(new Card(t_reuniones, () => {flag_reuniones = true;}, () => {flag_reuniones = false;})) 
-    else
+    if (globalPerc >= cp_reuniones) {
+        if (!flag_reuniones && !globalLockdown)
+            availableFlags.push(new Card(t_reuniones, () => {flag_reuniones = true;}, () => {flag_reuniones = false;})) 
+    } else
         flag_reuniones = false;
+    // Relaccionadas con los comercios
+    // Límite de aforo
+    if (globalPerc >= cp_aforo) {
+        if (!flag_comercios[0])
+            availableFlags.push(new Card(t_aforo, () => {flag_comercios[0] = true;}, () => {flag_comercios[0] = false;})) 
+    } else
+        flag_comercios[0] = false;
+    // Cierre de los locales de ocio
+    if (globalPerc >= cp_ocio) {
+        if (!flag_comercios[1])
+            availableFlags.push(new Card(t_ocio, () => {flag_comercios[1] = true;}, () => {flag_comercios[1] = false;})) 
+    } else
+        flag_comercios[1] = false;
+    // Cierre de los bares
+    if (globalPerc >= cp_bares) {
+        if (!flag_comercios[2])
+            availableFlags.push(new Card(t_bares, () => {flag_comercios[2] = true;}, () => {flag_comercios[2] = false;})) 
+    } else
+        flag_comercios[2] = false;
     // ----------------
 
     function showAllFlags(flags) {

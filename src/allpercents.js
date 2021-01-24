@@ -15,10 +15,21 @@ const cp_fronteras =            0.014           / 100;
 const cp_toquequeda =           0.117021        / 100;
 // Porcentaje de población necesario par que salga el límite de reuniones
 const cp_reuniones =            0.05            / 100;
+// Flags de comercios
+// Porcentaje de población necesario para que salga el límite de aforo en los comercios
+const cp_aforo =                0.0425532       / 100;
+// Porcentaje de población necesario para que se cierren los locales de ocio
+const cp_ocio =                 0.0383          / 100;
+// Porcentaje de población necesario para que se cierren los bares
+const cp_bares =                0.0702127       / 100;
 
 const t_fronteras = "Los casos están aumentando por todo el mundo.\n¿Cerrar las fronteras del país?";
 const t_toquequeda = "Los casos están aumentando por todo el país.\n¿Se impone un toque de queda?";
 const t_reuniones = "Los casos están aumentando por todo el país.\n¿Se limitan los grupos de personas?";
+// Textos de las meddas relaccionadas con los comercios
+const t_aforo = "Los casos están aumentando por todo el país.\n¿Se limita el aforo de los comercios?";
+const t_ocio = "Los casos están aumentando por todo el país.\n¿Se cierran los locales de ocio?";
+const t_bares = "Los casos están aumentando por todo el país.\n¿Se cierran los negocios de hostelería?";
 
 // Porcentaje de población necesaro para que se puede hacer una cuarentena general
 const cp_cuarentenaGeneral =    21.27            / 100;
@@ -145,9 +156,14 @@ const cp_medicosyancianos = 19.42                 / 100;
 const cp_trabajadores =     42.00                 / 100;
 const cp_jovenes = 1 - cp_medicosyancianos + cp_trabajadores;
 
+// Condiciones de final
+const cp_minEconomy = 0.03                        * 100; // Nivel mínimo de economía para terminar la partida
+const cp_minHappiness = 0.01                      * 100; // Nivel mínimo de felicidad para terminar la partida
+const cp_maxInfections = 0.9                      * 100; // Nvel máximo de infectados para terminar la partida
 // Mensajes del final
 endMessages = [
     "España sufre una tremenda crisis gracias a tu pésima gestión del país.",
     "Nadie en tu país te quiere como líder del gobierno, por lo que eres expulsado de la presidencia y te enfrentas a cargos por atentar contra la salud de los habitantes de España",
-    "Enhorabuena, has conseguido combatir al virus."
+    "Enhorabuena, has conseguido combatir al virus.",
+    "No has conseguido controlar la enfermedad. Eres expulsado de la presidencia y te enfrentas a cargos contra la salud pública"
 ];

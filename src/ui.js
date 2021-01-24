@@ -6,6 +6,11 @@ class Color {
     }
 }
 
+function infectionScale(x) { // Curva mejorada (sólo válida para el intervalo [0, 1])
+    const a = 9.45;
+    return (log(x * exp(a) + 1) / log(exp(a) + 1));
+}
+
 class StatusBar {
     static barSpeed = 25;
     static barWidth = 0.025;
@@ -53,9 +58,12 @@ class StatusBar {
     }
 }
 
+let canps = true;
+
 class Card {
     static cardSpeed = 10;
     static cardSize = 0.6;
+    static screenBorder = 0.2;
 
     constructor(text, accept, reject, ...args) {
         this.accepted = accept;
@@ -74,12 +82,11 @@ class Card {
     }
 
     update() {
-        let screenBorder = 0.2
         if (this.mode == 1 && this.order == 0) { // Movimiento de la carta cuando se arrastra el cursor por encima
             if (mouseIsPressed && mouseX <= width && mouseX >= 0 && mouseY <= height && mouseY >= 0) {
                 if (!this.selecting)
                     sounds[2].play();
-                if (mouseX / width <= screenBorder || mouseX / width >= (1 - screenBorder))
+                if (mouseX / width <= Card.screenBorder || mouseX / width >= (1 - Card.screenBorder))
                     this.objPosition.set(mouseX / width, mouseY / height);
                 else
                     this.objPosition.set(mouseX / width / 4 + 0.375, mouseY / height / 4 + 0.375);
@@ -87,18 +94,26 @@ class Card {
             } else {
                 if (this.selecting) {
                     let playSound = true;
-                    if (this.objPosition.x <= screenBorder) {
+                    if (this.objPosition.x <= Card.screenBorder) {
                         this.mode = 2;
                         this.accepted(...this.args);
                         updateBars();
                     }
-                    else if (this.objPosition.x >= (1 - screenBorder)) {
+                    else if (this.objPosition.x >= (1 - Card.screenBorder)) {
                         this.mode = 3;
                         this.rejected(...this.args);
                         updateBars();
-                    }
-                    else {
+                    } else if (mouseY / height >= (1 - Card.screenBorder)) {
+                        availableCards.forEach(card => {
+                            card.mode = 4;
+                        });
+                        canps = false;
+                        playSound = false;
+                    } else {
                         this.objPosition.set(0.5, 0.5);
+                        availableCards.forEach(card => {
+                            card.mode = 1;
+                        });
                         playSound = false;
                     }
                     if (playSound)
@@ -109,7 +124,16 @@ class Card {
             }
         }
 
-        if (this.prevMode != this.mode) {
+        if (this.mode == 4 && mouseIsPressed && canps) {
+            canps = false;
+            if (!sounds[3].isPlaying())
+                sounds[3].play();
+            this.mode = 1;
+        }
+        if (!mouseIsPressed)
+            canps = true;
+
+        if (this.prevMode != this.mode) { // Cambio del modo
             switch (this.mode) {
                 case 0: // Fuera de la pantalla
                     this.objPosition.y = 1.75;
@@ -124,6 +148,10 @@ class Card {
                     break;
                 case 3: // Rechazada (Derecha)
                     this.objPosition.x = 1.75;
+                    break;
+                case 4: // Ocultas
+                    this.objPosition.y = 1 + Card.cardSize / 3;
+                    this.objPosition.x = 0.5;
                     break;
             }
         }
@@ -171,6 +199,24 @@ class Card {
                 textAlign(CENTER, CENTER);
                 fill(255);
                 text(this.text, 0, 0, (Card.cardSize * 13 / 15) / imageFactor / factor, (Card.cardSize * 13 / 15));
+
+                // Dibujado de los iconos de aceptar y rechazar
+                // Dibujar las imágenes
+                if (this.order == 0) {
+                    const iconsSize = 0.3;
+
+                    // Aplicar la transparencia
+                    if (this.mode == 1)
+                        tint(255, 255, 255, 64);
+                    else
+                        tint(255, 255, 255, 191);
+
+                    if (this.objPosition.x <= Card.screenBorder)
+                        image(icons[10], 0, 0, iconsSize * icons[10].width / icons[10].height, iconsSize);
+    
+                    if (this.objPosition.x >= (1 - Card.screenBorder))
+                        image(icons[11], 0, 0, iconsSize * icons[11].width / icons[11].height, iconsSize);
+                }
             pop();
         } else {
             rectMode(CENTER);

@@ -41,8 +41,6 @@ function updateVaccines() {
     }
 }
 
-
-
 function applyVaccines() {
     if (vaccineProgress >= 0.99) {
         provincias.forEach(provincia => {

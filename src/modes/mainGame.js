@@ -15,8 +15,9 @@ var endCause = -1;
 // Modo 1
 const deltaStep = 7 // Días para que salgan nuevas opciones
 const deltaCard = 0.25;
-const deltaSim = 6 / deltaStep;
+const deltaSim = 4 / deltaStep;
 // const deltaSim = 0.1;
+var counter = 5;
 
 gameStateSetups[1] = () => {
     availableCards.length = 0;
@@ -85,6 +86,9 @@ var availableCards = new Array();
 
 gameStates[1] = () => { // Juego Principal¡
     timer += deltaTime / 1000;
+    counter = (counter + 1) % 10;
+    if (counter == 0 && microState == 1)
+        showMoreCards();
 
     background(30, 27, 53);
     fill(255, 255, 255);
@@ -97,7 +101,7 @@ gameStates[1] = () => { // Juego Principal¡
     // shader(infectionsDisplayer);
     infectionColoring.imageMode(CENTER);
     provinceMaps.forEach((provincia, index) => {
-        let perc = (provincias[index].totalContagios / provincias[index].population) * 255;
+        let perc = infectionScale(provincias[index].totalContagios / provincias[index].population) * 255;
         let recp = (sq((provincias[index].totalRecovered + provincias[index].deaths)) / provincias[index].population) * 255;
         infectionColoring.tint(perc, 255, recp);
         infectionColoring.image(provincia, 0, 0, infectionColoring.width / factor * provincia.width / provincia.height, infectionColoring.height);
@@ -172,7 +176,7 @@ gameStates[1] = () => { // Juego Principal¡
 
     // image(infectionColoring, 0.5, 0.5, 1, 1);
     // Actualización de las barras de estado
-    contagiados.value = totalContagios / totalPopulation * 100;
+    contagiados.value = infectionScale(totalContagios / totalPopulation) * 100;
 
     economia.update();
     felicidad.update();
@@ -207,26 +211,32 @@ gameStates[1] = () => { // Juego Principal¡
     pop();
 
     // Condiciones de fin de juego
-    if (economia.valueDisplayed <= 3)
+    if (economia.valueDisplayed <= cp_minEconomy)
         endCause = 0;
-    if (felicidad.valueDisplayed <= 0)
+    if (felicidad.valueDisplayed <= cp_minHappiness)
         endCause = 1;
     if (totalContagios < 1 && totalContagios != 0)
         endCause = 2;
+    if (contagiados.value >= cp_maxInfections)
+        endCause = 3;
     
     if (endCause != -1)
         changeGameState(3);
 }
 
+let prevCardLenght = -1;
 function showMoreCards() {
-    let firstNotShown = availableCards.length - 1;
-    availableCards.every((card, i) => {
-        if (card.mode == 0) {
-            firstNotShown = i;
-            return false;
-        }
-        return true;
-    });
-    timer = firstNotShown * deltaCard;
-    prevCardShown = -1;
+    if (prevCardLenght != availableCards.length) {
+        let firstNotShown = availableCards.length - 1;
+        availableCards.every((card, i) => {
+            if (card.mode == 0) {
+                firstNotShown = i;
+                return false;
+            }
+            return true;
+        });
+        timer = firstNotShown * deltaCard;
+        prevCardShown = -1;
+        prevCardLenght = availableCards.length;
+    }
 }

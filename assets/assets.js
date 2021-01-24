@@ -19,7 +19,7 @@ var infectionsDisplayer;
 function preload() {
     // return;
     // Carga de imágenes
-    icons = loadArray(["icons/corona.png", "icons/dinero.png", "icons/enfadado.png", "icons/serio.png", "icons/feliz.png", "icons/carta.png", "icons/cardBorder.png", "icons/iconHolder.png", "icons/virus1.png", "icons/virus2.png"]);
+    icons = loadArray(["icons/corona.png", "icons/dinero.png", "icons/enfadado.png", "icons/serio.png", "icons/feliz.png", "icons/carta.png", "icons/cardBorder.png", "icons/iconHolder.png", "icons/virus1.png", "icons/virus2.png", "icons/tic.png", "icons/X.png"]);
     // Blur a las imágenes
     icons[8].filter(BLUR, 2);
     icons[9].filter(BLUR, 2);
